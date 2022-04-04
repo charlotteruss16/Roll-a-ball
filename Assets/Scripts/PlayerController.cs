@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     public float speed = 5;
     public int score;
     int PickupCont;
+    GameObject resetPoint;
+    bool resetting = false;
+    Color originalColour;
     Timer timer;
 
     [Header("UI")]
@@ -28,6 +31,9 @@ public class PlayerController : MonoBehaviour
         UpdateScore();
         inGamePannel.SetActive(true);
         winPannel.SetActive(false);
+
+        resetPoint = GameObject.Find("ResetPoint");
+        originalColour = GetComponent<Renderer>().material.color;
         
     }
 
@@ -38,6 +44,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (resetting)
+            return;
+
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
@@ -58,6 +67,37 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Respawn"))
+        {
+            StartCoroutine(ResetPlayer());
+        }
+    }
+
+    public IEnumerator ResetPlayer()
+    {
+        resetting = true;
+        GetComponent<Renderer>().material.color = Color.black;
+        rb.velocity = Vector3.zero;
+        float resetSpeed = 2f;
+        Vector3 startPos = transform.position;
+        var i = 0.0f;
+        var rate = 1.0f / resetSpeed;
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            transform.position = Vector3.Lerp(startPos, resetPoint.transform.position, i);
+            yield return null;
+        }
+
+        GetComponent<Renderer>().material.color = originalColour;
+        resetting = false;
+    }
+
+
+
     void UpdateScore()
     {
         scoreText.text = "Score: " + score.ToString() + "/" + PickupCont.ToString();

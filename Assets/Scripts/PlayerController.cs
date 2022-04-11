@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Pickup"))
         {
+            other.GetComponent<Particles>().CreateParticles();
             Destroy(other.gameObject);
             score++;
             UpdateScore();

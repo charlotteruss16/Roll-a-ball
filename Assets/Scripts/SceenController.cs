@@ -7,12 +7,14 @@ public class SceenController : MonoBehaviour
 {
     public void ChangeScene(string _sceneName)
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(_sceneName);
 
     }
 
     public void ReloadScene()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
     } 

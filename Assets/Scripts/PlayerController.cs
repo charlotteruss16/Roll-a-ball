@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     bool resetting = false;
     Color originalColour;
     Timer timer;
+    GameController gameController;
 
     [Header("UI")]
     public TMP_Text scoreText;
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
 
         resetPoint = GameObject.Find("ResetPoint");
         originalColour = GetComponent<Renderer>().material.color;
+        gameController = FindObjectOfType<GameController>();
         
     }
 
@@ -45,6 +47,8 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         if (resetting)
+            return;
+        if (gameController.controlType == ControlType.WorldTilt)
             return;
 
         float moveHorizontal = Input.GetAxis("Horizontal");

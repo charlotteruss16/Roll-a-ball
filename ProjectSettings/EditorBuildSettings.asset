@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: 59c7c3b19010a1742910b00746611510
+  - enabled: 1
+    path: Assets/Scenes/TiltWorld.unity
+    guid: 305b15af35cd45448a06dd662e4ece78
   m_configObjects: {}

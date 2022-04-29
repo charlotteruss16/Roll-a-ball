@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
         score = 0;
         rb = GetComponent<Rigidbody>();
         PickupCont = GameObject.FindGameObjectsWithTag("Pickup").Length;
-        timer = FindObjectOfType<Timer>();
-        timer.StartTimer();
+        //timer = FindObjectOfType<Timer>();
+        //timer.StartTimer();
         UpdateScore();
         inGamePannel.SetActive(true);
         winPannel.SetActive(false);
@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
         resetPoint = GameObject.Find("ResetPoint");
         originalColour = GetComponent<Renderer>().material.color;
         gameController = FindObjectOfType<GameController>();
+        timer = FindObjectOfType<Timer>();
+        if (gameController.gameType == GameType.SpeedRun)
+            StartCoroutine(timer.StartCountdown());
         
     }
 
@@ -50,7 +53,9 @@ public class PlayerController : MonoBehaviour
             return;
         if (gameController.controlType == ControlType.WorldTilt)
             return;
-
+        if (gameController.gameType == GameType.SpeedRun && !timer.IsTiming())
+            return;
+        
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
@@ -118,6 +123,9 @@ public class PlayerController : MonoBehaviour
         inGamePannel.SetActive(false);
         winPannel.SetActive(true);
         winMessageText.text = "Your time was: " + timer.GetTime().ToString("F2");
+
+        if (gameController.gameType == GameType.SpeedRun)
+            timer.StopTimer();
  
     }
 }

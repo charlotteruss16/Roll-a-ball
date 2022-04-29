@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum ControlType { Normal, WorldTilt };
 
+public enum GameType { Normal, SpeedRun}
+
 public class GameController : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static GameController instance;
     public ControlType controlType;
+    public GameType gameType;
 
     private void Awake()
     {

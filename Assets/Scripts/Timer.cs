@@ -9,6 +9,7 @@ public class Timer : MonoBehaviour
     public float currentTime;
     bool timing;
     float bestTime;
+    bool paused = false;
 
     SceneController sceneController;
 
@@ -27,19 +28,19 @@ public class Timer : MonoBehaviour
     [Header("UI")]
     public Image clockFill;
     float temp;
+
     void Start()
     {
         timesPannel.SetActive(false);
         countdownPannel.SetActive(false);
         timerText.text = "";
         sceneController = FindObjectOfType<SceneController>();
-
     }
 
 
     void Update()
     {
-        if (timing)
+        if (timing && !paused)
         {
             currentTime += Time.deltaTime;
             temp += Time.deltaTime;
@@ -48,13 +49,13 @@ public class Timer : MonoBehaviour
             clockFill.fillAmount = temp;
             timerText.text = currentTime.ToString("F3");
         }
-
+        if (Input.GetKeyDown(KeyCode.P))
+            PlayerPrefs.DeleteAll();
     }
 
     public IEnumerator StartCountdown()
     {
-        Debug.Log("HERE");
-        bestTime = PlayerPrefs.GetFloat("Best Time " + sceneController.GetsceneName());
+        bestTime = PlayerPrefs.GetFloat("BestTime" + sceneController.GetSceneName());
         if (bestTime == 0f) bestTime = 600f;
 
         countdownPannel.SetActive(true);
@@ -67,7 +68,7 @@ public class Timer : MonoBehaviour
         countdownText.text = "GO";
         StartTimer();
         countdownPannel.SetActive(false);
- 
+
     }
 
     public void StartTimer()
@@ -77,13 +78,15 @@ public class Timer : MonoBehaviour
     }
 
     public void StopTimer()
-    { 
+    {
+        ChangeTimeScale(1);
+        paused = false;
         timing = false;
 
         if (currentTime <= bestTime)
         {
             bestTime = currentTime;
-            PlayerPrefs.SetFloat("Best Time" + sceneController.GetsceneName(), bestTime);
+            PlayerPrefs.SetFloat("BestTime" + sceneController.GetSceneName(), bestTime);
             bestTimeResult.text = bestTime.ToString("F3") + "!!NEW BEST!!";
         }
     }
@@ -96,5 +99,15 @@ public class Timer : MonoBehaviour
     public bool IsTiming()
     {
         return timing;
+    }
+
+    public void PauseTimer(bool _paused)
+    {
+        paused = _paused;
+    }
+
+    public void ChangeTimeScale(float _timeScale)
+    {
+        Time.timeScale = _timeScale;
     }
 }

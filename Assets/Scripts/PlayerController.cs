@@ -6,7 +6,10 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
-    public float speed = 5;
+    public float speed = 10.0f;
+    [HideInInspector]
+    public float baseSpeed;
+
     public int score;
     int PickupCont;
     GameObject resetPoint;
@@ -24,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        baseSpeed = speed;
         score = 0;
         rb = GetComponent<Rigidbody>();
         PickupCont = GameObject.FindGameObjectsWithTag("Pickup").Length;
@@ -65,6 +69,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.CompareTag("PowerUp"))
+        {
+            other.GetComponent<PowerUp>().UsePowerUp();
+            other.gameObject.transform.position = Vector3.down * 1000;
+        }
+
+        //Pick Up
         if (other.CompareTag("Pickup"))
         {
             other.GetComponent<Particles>().CreateParticles();
